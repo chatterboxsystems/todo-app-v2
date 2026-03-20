@@ -1,4 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect width="64" height="64" rx="8" fill="#22c55e"/>
-  <path d="M18 32l10 10 18-18" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none">
+  <!-- Background rounded rectangle -->
+  <rect x="0" y="0" width="200" height="60" rx="12" fill="#3b82f6"/>
+
+  <!-- "todo" text -->
+  <text x="45" y="40" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1e3a5f">todo</text>
+
+  <!-- Checkbox outline -->
+  <rect x="135" y="12" width="36" height="36" rx="6" fill="white" stroke="#1e3a5f" stroke-width="3"/>
+
+  <!-- Checkmark -->
+  <path d="M145 30l8 8 16-16" stroke="#22c55e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
