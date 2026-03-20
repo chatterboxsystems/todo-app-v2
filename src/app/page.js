@@ -12,14 +12,26 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [editingTodo, setEditingTodo] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
+  const [currentApp, setCurrentApp] = useState('chatterbox');
 
-  // Initialize dark mode from localStorage or system preference
+  const APPS = [
+    { id: 'chatterbox', name: 'Chatterbox Systems' },
+    { id: 'happyhearts', name: 'Happy Hearts Today' },
+  ];
+
+  // Initialize dark mode and app from localStorage
   useEffect(() => {
-    const stored = localStorage.getItem('darkMode');
-    if (stored !== null) {
-      setDarkMode(stored === 'true');
+    const storedDarkMode = localStorage.getItem('darkMode');
+    const storedApp = localStorage.getItem('currentApp');
+
+    if (storedDarkMode !== null) {
+      setDarkMode(storedDarkMode === 'true');
     } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
       setDarkMode(true);
+    }
+
+    if (storedApp) {
+      setCurrentApp(storedApp);
     }
   }, []);
 
@@ -33,6 +45,11 @@ export default function Home() {
     localStorage.setItem('darkMode', darkMode);
   }, [darkMode]);
 
+  // Save app selection
+  useEffect(() => {
+    localStorage.setItem('currentApp', currentApp);
+  }, [currentApp]);
+
   // Filter states
   const [search, setSearch] = useState('');
   const [priority, setPriority] = useState('');
@@ -43,6 +60,7 @@ export default function Home() {
     try {
       setLoading(true);
       const params = new URLSearchParams();
+      params.set('app', currentApp);
       if (search) params.set('search', search);
       if (priority) params.set('priority', priority);
       if (category) params.set('category', category);
@@ -63,7 +81,7 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  }, [search, priority, category, completed]);
+  }, [search, priority, category, completed, currentApp]);
 
   useEffect(() => {
     fetchTodos();
@@ -89,7 +107,7 @@ export default function Home() {
     const res = await fetch('/api/todos', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(todoData),
+      body: JSON.stringify({ ...todoData, app: currentApp }),
     });
 
     const data = await res.json();
@@ -162,6 +180,19 @@ export default function Home() {
           <div className="logo-title">
             <img src="/logo.svg" alt="Todo App Logo" className="app-logo" />
             <h1>Todo App</h1>
+          </div>
+          <div className="app-switcher">
+            <select
+              value={currentApp}
+              onChange={(e) => {
+                setCurrentApp(e.target.value);
+              }}
+              className="app-select"
+            >
+              {APPS.map((app) => (
+                <option key={app.id} value={app.id}>{app.name}</option>
+              ))}
+            </select>
           </div>
           <p className="subtitle">Manage your tasks with Redis</p>
         </div>

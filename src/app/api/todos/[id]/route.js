@@ -3,6 +3,11 @@ import { getRedisClient } from '@/lib/redis';
 
 const TODOS_INDEX = 'todos:index';
 
+// Helper to get app-specific index key
+function getAppIndexKey(app) {
+  return `todos:index:${app}`;
+}
+
 export async function GET(request, { params }) {
   try {
     const redis = await getRedisClient();
@@ -97,8 +102,10 @@ export async function DELETE(request, { params }) {
     // Delete the todo hash
     await redis.del(`todo:${id}`);
 
-    // Remove from sorted set
-    await redis.zRem(TODOS_INDEX, id);
+    // Extract app from ID and remove from correct sorted set
+    const app = existingTodo.app || 'chatterbox';
+    const appIndexKey = getAppIndexKey(app);
+    await redis.zRem(appIndexKey, id);
 
     return NextResponse.json({ success: true });
   } catch (error) {

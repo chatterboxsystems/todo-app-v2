@@ -3,6 +3,11 @@ import { getRedisClient } from '@/lib/redis';
 
 const TODOS_INDEX = 'todos:index';
 
+// Helper to get app-specific index key
+function getAppIndexKey(app) {
+  return `todos:index:${app}`;
+}
+
 export async function GET(request) {
   try {
     const redis = await getRedisClient();
@@ -13,9 +18,11 @@ export async function GET(request) {
     const category = searchParams.get('category') || '';
     const completed = searchParams.get('completed');
     const getCategories = searchParams.get('categories') === 'true';
+    const app = searchParams.get('app') || 'chatterbox';
 
-    // Get all todo IDs from the sorted set
-    const todoIds = await redis.zRange(TODOS_INDEX, 0, -1);
+    // Get app-specific todo IDs from the sorted set
+    const appIndexKey = getAppIndexKey(app);
+    const todoIds = await redis.zRange(appIndexKey, 0, -1);
 
     if (!todoIds || todoIds.length === 0) {
       if (getCategories) {
@@ -83,7 +90,8 @@ export async function POST(request) {
     const redis = await getRedisClient();
     const body = await request.json();
 
-    const { title, description, priority, category, dueDate } = body;
+    const { title, description, priority, category, dueDate, app } = body;
+    const currentApp = app || 'chatterbox';
 
     if (!title || !title.trim()) {
       return NextResponse.json(
@@ -92,11 +100,12 @@ export async function POST(request) {
       );
     }
 
-    const id = `todo:${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const id = `todo:${currentApp}:${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const now = new Date().toISOString();
 
     const todo = {
       id,
+      app: currentApp,
       title: title.trim(),
       description: description?.trim() || '',
       completed: 'false',
@@ -110,8 +119,9 @@ export async function POST(request) {
     // Store the todo as a hash
     await redis.hSet(`todo:${id}`, todo);
 
-    // Add to sorted set with timestamp as score
-    await redis.zAdd(TODOS_INDEX, { score: Date.now(), value: id });
+    // Add to app-specific sorted set with timestamp as score
+    const appIndexKey = getAppIndexKey(currentApp);
+    await redis.zAdd(appIndexKey, { score: Date.now(), value: id });
 
     return NextResponse.json({ todo }, { status: 201 });
   } catch (error) {
