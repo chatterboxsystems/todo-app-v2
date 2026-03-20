@@ -1,66 +1,159 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import TodoForm from '@/components/TodoForm';
+import TodoList from '@/components/TodoList';
+import Filters from '@/components/Filters';
 
 export default function Home() {
+  const [todos, setTodos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [editingTodo, setEditingTodo] = useState(null);
+
+  // Filter states
+  const [search, setSearch] = useState('');
+  const [priority, setPriority] = useState('');
+  const [category, setCategory] = useState('');
+  const [completed, setCompleted] = useState('');
+
+  const fetchTodos = useCallback(async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      if (search) params.set('search', search);
+      if (priority) params.set('priority', priority);
+      if (category) params.set('category', category);
+      if (completed) params.set('completed', completed);
+
+      const res = await fetch(`/api/todos?${params.toString()}`);
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to fetch todos');
+      }
+
+      setTodos(data.todos || []);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching todos:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [search, priority, category, completed]);
+
+  useEffect(() => {
+    fetchTodos();
+  }, [fetchTodos]);
+
+  const handleCreateTodo = async (todoData) => {
+    const res = await fetch('/api/todos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(todoData),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to create todo');
+    }
+
+    await fetchTodos();
+  };
+
+  const handleUpdateTodo = async (id, updates) => {
+    const res = await fetch(`/api/todos/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to update todo');
+    }
+
+    setEditingTodo(null);
+    await fetchTodos();
+  };
+
+  const handleToggle = async (todo) => {
+    await handleUpdateTodo(todo.id, {
+      completed: todo.completed !== 'true',
+    });
+  };
+
+  const handleEdit = (todo) => {
+    setEditingTodo(todo);
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('Are you sure you want to delete this todo?')) return;
+
+    const res = await fetch(`/api/todos/${id}`, {
+      method: 'DELETE',
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to delete todo');
+    }
+
+    await fetchTodos();
+  };
+
+  const handleEditSubmit = async (todoData) => {
+    if (!editingTodo) return;
+    await handleUpdateTodo(editingTodo.id, todoData);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingTodo(null);
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="container">
+      <header className="header">
+        <h1>Todo App</h1>
+        <p className="subtitle">Manage your tasks with Redis</p>
+      </header>
+
+      {error && <div className="error-message">{error}</div>}
+
+      <section className="form-section">
+        <TodoForm
+          onSubmit={editingTodo ? handleEditSubmit : handleCreateTodo}
+          editingTodo={editingTodo}
+          onCancel={handleCancelEdit}
         />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </section>
+
+      <section className="filters-section">
+        <Filters
+          search={search}
+          onSearchChange={setSearch}
+          priority={priority}
+          onPriorityChange={setPriority}
+          category={category}
+          onCategoryChange={setCategory}
+          completed={completed}
+          onCompletedChange={setCompleted}
+        />
+      </section>
+
+      <section className="list-section">
+        <TodoList
+          todos={todos}
+          onToggle={handleToggle}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          loading={loading}
+        />
+      </section>
     </div>
   );
 }
