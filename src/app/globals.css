@@ -145,6 +145,20 @@ body {
   cursor: pointer;
 }
 
+.category-select-wrapper {
+  display: flex;
+}
+
+.new-category-input {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.new-category-input .form-input {
+  flex: 1;
+}
+
 .form-actions {
   display: flex;
   gap: 0.75rem;

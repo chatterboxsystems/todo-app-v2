@@ -12,11 +12,15 @@ export async function GET(request) {
     const priority = searchParams.get('priority') || '';
     const category = searchParams.get('category') || '';
     const completed = searchParams.get('completed');
+    const getCategories = searchParams.get('categories') === 'true';
 
     // Get all todo IDs from the sorted set
     const todoIds = await redis.zRange(TODOS_INDEX, 0, -1);
 
     if (!todoIds || todoIds.length === 0) {
+      if (getCategories) {
+        return NextResponse.json({ categories: [] });
+      }
       return NextResponse.json({ todos: [] });
     }
 
@@ -57,6 +61,12 @@ export async function GET(request) {
 
     // Sort by createdAt descending (most recent first)
     filteredTodos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    // If requesting categories, extract unique ones
+    if (getCategories) {
+      const categories = [...new Set(todos.map(t => t.category).filter(Boolean))].sort();
+      return NextResponse.json({ categories });
+    }
 
     return NextResponse.json({ todos: filteredTodos });
   } catch (error) {

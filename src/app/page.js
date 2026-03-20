@@ -7,6 +7,7 @@ import Filters from '@/components/Filters';
 
 export default function Home() {
   const [todos, setTodos] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingTodo, setEditingTodo] = useState(null);
@@ -47,6 +48,22 @@ export default function Home() {
     fetchTodos();
   }, [fetchTodos]);
 
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await fetch('/api/todos?categories=true');
+      const data = await res.json();
+      if (res.ok) {
+        setCategories(data.categories || []);
+      }
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
   const handleCreateTodo = async (todoData) => {
     const res = await fetch('/api/todos', {
       method: 'POST',
@@ -61,6 +78,7 @@ export default function Home() {
     }
 
     await fetchTodos();
+    await fetchCategories();
   };
 
   const handleUpdateTodo = async (id, updates) => {
@@ -78,6 +96,7 @@ export default function Home() {
 
     setEditingTodo(null);
     await fetchTodos();
+    await fetchCategories();
   };
 
   const handleToggle = async (todo) => {
@@ -129,6 +148,7 @@ export default function Home() {
           onSubmit={editingTodo ? handleEditSubmit : handleCreateTodo}
           editingTodo={editingTodo}
           onCancel={handleCancelEdit}
+          categories={categories}
         />
       </section>
 

@@ -2,13 +2,20 @@
 
 import { useState, useEffect } from 'react';
 
-export default function TodoForm({ onSubmit, editingTodo, onCancel }) {
+const DEFAULT_CATEGORIES = ['Work', 'Personal', 'Shopping', 'Health', 'Learning', 'Home', 'Finance', 'Other'];
+
+export default function TodoForm({ onSubmit, editingTodo, onCancel, categories = [] }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('medium');
   const [category, setCategory] = useState('');
+  const [newCategory, setNewCategory] = useState('');
+  const [showNewCategory, setShowNewCategory] = useState(false);
   const [dueDate, setDueDate] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Combine default categories with custom ones from database
+  const allCategories = [...new Set([...DEFAULT_CATEGORIES, ...categories])].sort();
 
   useEffect(() => {
     if (editingTodo) {
@@ -27,6 +34,8 @@ export default function TodoForm({ onSubmit, editingTodo, onCancel }) {
     setDescription('');
     setPriority('medium');
     setCategory('');
+    setNewCategory('');
+    setShowNewCategory(false);
     setDueDate('');
   };
 
@@ -36,11 +45,12 @@ export default function TodoForm({ onSubmit, editingTodo, onCancel }) {
 
     setLoading(true);
     try {
+      const finalCategory = showNewCategory ? newCategory.trim() : category;
       await onSubmit({
         title,
         description,
         priority,
-        category,
+        category: finalCategory,
         dueDate,
       });
       resetForm();
@@ -48,6 +58,14 @@ export default function TodoForm({ onSubmit, editingTodo, onCancel }) {
       console.error('Error submitting todo:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAddNewCategory = () => {
+    if (newCategory.trim()) {
+      setCategory(newCategory.trim());
+      setShowNewCategory(false);
+      setNewCategory('');
     }
   };
 
@@ -90,13 +108,55 @@ export default function TodoForm({ onSubmit, editingTodo, onCancel }) {
 
         <div className="form-group">
           <label>Category</label>
-          <input
-            type="text"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            placeholder="Category"
-            className="form-input"
-          />
+          {!showNewCategory ? (
+            <div className="category-select-wrapper">
+              <select
+                value={category}
+                onChange={(e) => {
+                  if (e.target.value === '__new__') {
+                    setShowNewCategory(true);
+                  } else {
+                    setCategory(e.target.value);
+                  }
+                }}
+                className="form-select"
+              >
+                <option value="">Select category...</option>
+                {allCategories.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+                <option value="__new__">+ Add new category</option>
+              </select>
+            </div>
+          ) : (
+            <div className="new-category-input">
+              <input
+                type="text"
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+                placeholder="New category name"
+                className="form-input"
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={handleAddNewCategory}
+                className="btn btn-small btn-primary"
+              >
+                Add
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowNewCategory(false);
+                  setNewCategory('');
+                }}
+                className="btn btn-small btn-secondary"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="form-group">
