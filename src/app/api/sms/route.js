@@ -34,9 +34,25 @@ export async function POST(request) {
     const fromNumber = process.env.TWILIO_PHONE_NUMBER;
     const toNumber = process.env.ALERT_PHONE_NUMBER;
 
+    // Debug: log which vars are present
+    console.log('Twilio config:', {
+      hasAccountSid: !!accountSid,
+      hasAuthToken: !!authToken,
+      hasFromNumber: !!fromNumber,
+      hasToNumber: !!toNumber,
+    });
+
     if (!accountSid || !authToken || !fromNumber || !toNumber) {
       return NextResponse.json(
-        { error: 'Twilio credentials not configured' },
+        {
+          error: 'Twilio credentials not configured',
+          details: {
+            accountSid: !!accountSid,
+            authToken: !!authToken,
+            fromNumber: !!fromNumber,
+            toNumber: !!toNumber,
+          }
+        },
         { status: 500 }
       );
     }

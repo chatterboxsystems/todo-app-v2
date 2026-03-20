@@ -188,7 +188,8 @@ export default function Home() {
       if (res.ok) {
         setSmsStatus(data.sent ? 'SMS sent successfully!' : 'No active todos to send');
       } else {
-        setSmsStatus('Error: ' + (data.error || 'Failed to send SMS'));
+        const details = data.details ? JSON.stringify(data.details) : '';
+        setSmsStatus('Error: ' + (data.error || 'Failed to send SMS') + ' ' + details);
       }
     } catch (err) {
       setSmsStatus('Error: Failed to send SMS');
