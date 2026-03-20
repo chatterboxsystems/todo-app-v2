@@ -101,18 +101,27 @@ export async function POST(request) {
 
       message += `\nTotal: ${totalActive} active todos`;
 
+      // Debug: Log phone numbers
+      console.log('Sending SMS from:', fromNumber, 'to:', toNumber);
+
       // Send SMS
-      await client.messages.create({
+      const twilioMessage = await client.messages.create({
         body: message,
         from: fromNumber,
         to: toNumber,
       });
+
+      console.log('Twilio message SID:', twilioMessage.sid, 'Status:', twilioMessage.status);
 
       return NextResponse.json({
         message: 'Daily summary sent',
         sent: true,
         chatterboxCount: chatterboxTodos.length,
         happyHeartsCount: happyHeartsTodos.length,
+        twilioSid: twilioMessage.sid,
+        twilioStatus: twilioMessage.status,
+        fromNumber,
+        toNumber,
       });
     }
 
