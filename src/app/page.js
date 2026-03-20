@@ -159,7 +159,10 @@ export default function Home() {
     <div className="container">
       <header className="header">
         <div className="header-content">
-          <h1>Todo App</h1>
+          <div className="logo-title">
+            <img src="/logo.svg" alt="Todo App Logo" className="app-logo" />
+            <h1>Todo App</h1>
+          </div>
           <p className="subtitle">Manage your tasks with Redis</p>
         </div>
         <button
