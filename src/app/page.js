@@ -11,6 +11,27 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingTodo, setEditingTodo] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Initialize dark mode from localStorage or system preference
+  useEffect(() => {
+    const stored = localStorage.getItem('darkMode');
+    if (stored !== null) {
+      setDarkMode(stored === 'true');
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setDarkMode(true);
+    }
+  }, []);
+
+  // Apply dark mode class to document
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
 
   // Filter states
   const [search, setSearch] = useState('');
@@ -137,8 +158,17 @@ export default function Home() {
   return (
     <div className="container">
       <header className="header">
-        <h1>Todo App</h1>
-        <p className="subtitle">Manage your tasks with Redis</p>
+        <div className="header-content">
+          <h1>Todo App</h1>
+          <p className="subtitle">Manage your tasks with Redis</p>
+        </div>
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className="theme-toggle"
+          aria-label="Toggle dark mode"
+        >
+          {darkMode ? '☀️' : '🌙'}
+        </button>
       </header>
 
       {error && <div className="error-message">{error}</div>}
