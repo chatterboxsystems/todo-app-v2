@@ -178,7 +178,7 @@ export default function Home() {
       <header className="header">
         <div className="header-content">
           <div className="logo-title">
-            <img src="/logo.svg" alt="Todo App Logo" className="app-logo" />
+            <img src="/logo.png" alt="Todo App Logo" className="app-logo" />
             <h1>Todo App</h1>
           </div>
           <div className="app-switcher">

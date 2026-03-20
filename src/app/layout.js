@@ -15,7 +15,7 @@ export const metadata = {
   title: "Todo App",
   description: "A full-featured todo app with Redis",
   icons: {
-    icon: "/logo-square.svg",
+    icon: "/logo-square.ico",
   },
 };
 
