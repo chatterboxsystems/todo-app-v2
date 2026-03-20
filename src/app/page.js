@@ -173,37 +173,37 @@ export default function Home() {
 
       {error && <div className="error-message">{error}</div>}
 
-      <section className="form-section">
-        <TodoForm
-          onSubmit={editingTodo ? handleEditSubmit : handleCreateTodo}
-          editingTodo={editingTodo}
-          onCancel={handleCancelEdit}
-          categories={categories}
-        />
-      </section>
+      <div className="main-layout">
+        <section className="form-section">
+          <TodoForm
+            onSubmit={editingTodo ? handleEditSubmit : handleCreateTodo}
+            editingTodo={editingTodo}
+            onCancel={handleCancelEdit}
+            categories={categories}
+          />
+        </section>
 
-      <section className="filters-section">
-        <Filters
-          search={search}
-          onSearchChange={setSearch}
-          priority={priority}
-          onPriorityChange={setPriority}
-          category={category}
-          onCategoryChange={setCategory}
-          completed={completed}
-          onCompletedChange={setCompleted}
-        />
-      </section>
+        <section className="list-section">
+          <Filters
+            search={search}
+            onSearchChange={setSearch}
+            priority={priority}
+            onPriorityChange={setPriority}
+            category={category}
+            onCategoryChange={setCategory}
+            completed={completed}
+            onCompletedChange={setCompleted}
+          />
 
-      <section className="list-section">
-        <TodoList
-          todos={todos}
-          onToggle={handleToggle}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          loading={loading}
-        />
-      </section>
+          <TodoList
+            todos={todos}
+            onToggle={handleToggle}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            loading={loading}
+          />
+        </section>
+      </div>
     </div>
   );
 }
