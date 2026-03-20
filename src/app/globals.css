@@ -144,6 +144,21 @@ body {
   background: var(--primary);
 }
 
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.sms-status {
+  background: #dcfce7;
+  color: #166534;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
 .subtitle {
   color: var(--completed);
   font-size: 1rem;

@@ -13,6 +13,8 @@ export default function Home() {
   const [editingTodo, setEditingTodo] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [currentApp, setCurrentApp] = useState('chatterbox');
+  const [sendingSms, setSendingSms] = useState(false);
+  const [smsStatus, setSmsStatus] = useState(null);
 
   const APPS = [
     { id: 'chatterbox', name: 'Chatterbox Systems' },
@@ -173,6 +175,28 @@ export default function Home() {
     setEditingTodo(null);
   };
 
+  const sendDailySummary = async () => {
+    setSendingSms(true);
+    setSmsStatus(null);
+    try {
+      const res = await fetch('/api/sms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'daily-summary' }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSmsStatus(data.sent ? 'SMS sent successfully!' : 'No active todos to send');
+      } else {
+        setSmsStatus('Error: ' + (data.error || 'Failed to send SMS'));
+      }
+    } catch (err) {
+      setSmsStatus('Error: Failed to send SMS');
+    } finally {
+      setSendingSms(false);
+    }
+  };
+
   return (
     <div className="container">
       <header className="header">
@@ -196,15 +220,25 @@ export default function Home() {
           </div>
           <p className="subtitle">Manage your tasks with Redis</p>
         </div>
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className="theme-toggle"
-          aria-label="Toggle dark mode"
-        >
-          {darkMode ? '☀️' : '🌙'}
-        </button>
+        <div className="header-actions">
+          <button
+            onClick={sendDailySummary}
+            className="btn btn-small"
+            disabled={sendingSms}
+          >
+            {sendingSms ? 'Sending...' : '📱 Test SMS'}
+          </button>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="theme-toggle"
+            aria-label="Toggle dark mode"
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+        </div>
       </header>
 
+      {smsStatus && <div className="sms-status">{smsStatus}</div>}
       {error && <div className="error-message">{error}</div>}
 
       <div className="main-layout">
