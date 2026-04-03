@@ -33,9 +33,11 @@ export default function Home() {
       setDarkMode(true);
     }
 
-    if (storedApp) {
-      setCurrentApp(storedApp);
-    }
+    if (storedApp && APPS.find(app => app.id === storedApp)) {
+  setCurrentApp(storedApp);
+} else {
+  setCurrentApp('chatterbox'); // fallback default
+}
   }, []);
 
   // Apply dark mode class to document
