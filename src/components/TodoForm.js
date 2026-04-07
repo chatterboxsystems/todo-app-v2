@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-const DEFAULT_CATEGORIES = ['Work', 'Personal', 'Shopping', 'Health', 'Learning', 'Home', 'Finance', 'Other'];
+const DEFAULT_CATEGORIES = ['Personal', 'Shopping', 'Health', 'Learning', 'Home', 'Finance', 'Other'];
 
 export default function TodoForm({ onSubmit, editingTodo, onCancel, categories = [] }) {
   const [title, setTitle] = useState('');
