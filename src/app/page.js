@@ -19,6 +19,7 @@ export default function Home() {
   const APPS = [
     { id: 'chatterbox', name: 'Chatterbox Systems' },
     { id: 'happyhearts', name: 'Happy Hearts Today' },
+    { id: 'thrivebaynarea', name: 'Thrive Bay Area' },
   ];
 
   // Initialize dark mode and app from localStorage
@@ -222,13 +223,6 @@ export default function Home() {
           <p className="subtitle">Manage your tasks with Redis</p>
         </div>
         <div className="header-actions">
-          <button
-            onClick={sendDailySummary}
-            className="btn btn-small"
-            disabled={sendingSms}
-          >
-            {sendingSms ? 'Sending...' : '📱 Test SMS'}
-          </button>
           <button
             onClick={() => setDarkMode(!darkMode)}
             className="theme-toggle"
