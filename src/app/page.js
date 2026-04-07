@@ -19,7 +19,11 @@ export default function Home() {
   const APPS = [
     { id: 'chatterbox', name: 'Chatterbox Systems' },
     { id: 'happyhearts', name: 'Happy Hearts Today' },
+<<<<<<< HEAD
     { id: 'thrivebaynarea', name: 'Thrive Bay Area' },
+=======
+    { id: 'tba', name: 'ThriveBayArea' },
+>>>>>>> be1d45fd8a992166b68d82e3b3d0a33f02176586
   ];
 
   // Initialize dark mode and app from localStorage
@@ -33,9 +37,11 @@ export default function Home() {
       setDarkMode(true);
     }
 
-    if (storedApp) {
-      setCurrentApp(storedApp);
-    }
+    if (storedApp && APPS.find(app => app.id === storedApp)) {
+  setCurrentApp(storedApp);
+} else {
+  setCurrentApp('chatterbox'); // fallback default
+}
   }, []);
 
   // Apply dark mode class to document
