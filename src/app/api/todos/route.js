@@ -17,6 +17,9 @@ export async function GET(request) {
     const priority = searchParams.get('priority') || '';
     const category = searchParams.get('category') || '';
     const completed = searchParams.get('completed');
+    const owner = searchParams.get('owner') || '';
+    const status = searchParams.get('status') || '';
+    const pipeline = searchParams.get('pipeline') || '';
     const getCategories = searchParams.get('categories') === 'true';
     const app = searchParams.get('app') || 'chatterbox';
 
@@ -59,6 +62,18 @@ export async function GET(request) {
       filteredTodos = filteredTodos.filter((todo) => todo.category === category);
     }
 
+    if (owner) {
+      filteredTodos = filteredTodos.filter((todo) => todo.owner === owner);
+    }
+
+    if (status) {
+      filteredTodos = filteredTodos.filter((todo) => todo.status === status);
+    }
+
+    if (pipeline) {
+      filteredTodos = filteredTodos.filter((todo) => todo.pipeline === pipeline);
+    }
+
     if (completed !== null && completed !== '') {
       const isCompleted = completed === 'true';
       filteredTodos = filteredTodos.filter(
@@ -90,7 +105,7 @@ export async function POST(request) {
     const redis = await getRedisClient();
     const body = await request.json();
 
-    const { title, description, priority, category, dueDate, app } = body;
+    const { title, description, priority, category, dueDate, app, owner, status, pipeline } = body;
     const currentApp = app || 'chatterbox';
 
     if (!title || !title.trim()) {
@@ -112,6 +127,9 @@ export async function POST(request) {
       priority: priority || 'medium',
       category: category || '',
       dueDate: dueDate || '',
+      owner: owner || '',
+      status: status || 'Open',
+      pipeline: pipeline || '🧠 Backlog',
       createdAt: now,
       updatedAt: now,
     };

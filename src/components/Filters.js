@@ -1,5 +1,9 @@
 'use client';
 
+const OWNERS = ['BensonsIII', 'Jeffery', 'Flo', 'CEO', 'CIO'];
+const STATUSES = ['Open', 'In Progress', 'Closed', 'Reopen'];
+const PIPELINES = ['🧠 Backlog', '⚡ In Progress', '👀 Review', '✅ Completed'];
+
 export default function Filters({
   search,
   onSearchChange,
@@ -9,6 +13,12 @@ export default function Filters({
   onCategoryChange,
   completed,
   onCompletedChange,
+  owner,
+  onOwnerChange,
+  status,
+  onStatusChange,
+  pipeline,
+  onPipelineChange,
 }) {
   return (
     <div className="filters">
@@ -17,9 +27,48 @@ export default function Filters({
           type="text"
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Search todos..."
+          placeholder="Search assignments..."
           className="filter-input"
         />
+      </div>
+
+      <div className="filter-group">
+        <select
+          value={pipeline}
+          onChange={(e) => onPipelineChange(e.target.value)}
+          className="filter-select"
+        >
+          <option value="">All Pipelines</option>
+          {PIPELINES.map((p) => (
+            <option key={p} value={p}>{p}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="filter-group">
+        <select
+          value={owner}
+          onChange={(e) => onOwnerChange(e.target.value)}
+          className="filter-select"
+        >
+          <option value="">All Owners</option>
+          {OWNERS.map((o) => (
+            <option key={o} value={o}>{o}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="filter-group">
+        <select
+          value={status}
+          onChange={(e) => onStatusChange(e.target.value)}
+          className="filter-select"
+        >
+          <option value="">All Statuses</option>
+          {STATUSES.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
       </div>
 
       <div className="filter-group">
@@ -29,9 +78,9 @@ export default function Filters({
           className="filter-select"
         >
           <option value="">All Priorities</option>
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
           <option value="high">High</option>
+          <option value="priority">Priority</option>
+          <option value="medium">Medium</option>
         </select>
       </div>
 
@@ -45,25 +94,16 @@ export default function Filters({
         />
       </div>
 
-      <div className="filter-group">
-        <select
-          value={completed}
-          onChange={(e) => onCompletedChange(e.target.value)}
-          className="filter-select"
-        >
-          <option value="">All Status</option>
-          <option value="true">Completed</option>
-          <option value="false">Active</option>
-        </select>
-      </div>
-
-      {(search || priority || category || completed) && (
+      {(search || priority || category || completed || owner || status || pipeline) && (
         <button
           onClick={() => {
             onSearchChange('');
             onPriorityChange('');
             onCategoryChange('');
             onCompletedChange('');
+            onOwnerChange('');
+            onStatusChange('');
+            onPipelineChange('');
           }}
           className="btn btn-small btn-secondary"
         >

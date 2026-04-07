@@ -4,8 +4,8 @@ export default function TodoItem({ todo, onToggle, onEdit, onDelete }) {
   const isCompleted = todo.completed === 'true';
 
   const priorityClass = {
-    low: 'priority-low',
     medium: 'priority-medium',
+    priority: 'priority-medium',
     high: 'priority-high',
   };
 
@@ -42,7 +42,7 @@ export default function TodoItem({ todo, onToggle, onEdit, onDelete }) {
           <span className={`todo-title ${isCompleted ? 'completed' : ''}`}>
             {todo.title}
           </span>
-          <span className={`priority-badge ${priorityClass[todo.priority]}`}>
+          <span className={`priority-badge ${priorityClass[todo.priority] || 'priority-medium'}`}>
             {todo.priority}
           </span>
         </div>
@@ -52,6 +52,15 @@ export default function TodoItem({ todo, onToggle, onEdit, onDelete }) {
         )}
 
         <div className="todo-meta">
+          {todo.pipeline && (
+            <span className="todo-category">{todo.pipeline}</span>
+          )}
+          {todo.owner && (
+            <span className="todo-category">Owner: {todo.owner}</span>
+          )}
+          {todo.status && (
+            <span className="todo-category">Status: {todo.status}</span>
+          )}
           {todo.category && (
             <span className="todo-category">{todo.category}</span>
           )}

@@ -60,6 +60,9 @@ export default function Home() {
   const [priority, setPriority] = useState('');
   const [category, setCategory] = useState('');
   const [completed, setCompleted] = useState('');
+  const [owner, setOwner] = useState('');
+  const [status, setStatus] = useState('');
+  const [pipeline, setPipeline] = useState('');
 
   const fetchTodos = useCallback(async () => {
     try {
@@ -70,6 +73,9 @@ export default function Home() {
       if (priority) params.set('priority', priority);
       if (category) params.set('category', category);
       if (completed) params.set('completed', completed);
+      if (owner) params.set('owner', owner);
+      if (status) params.set('status', status);
+      if (pipeline) params.set('pipeline', pipeline);
 
       const res = await fetch(`/api/todos?${params.toString()}`);
       const data = await res.json();
@@ -86,7 +92,7 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  }, [search, priority, category, completed, currentApp]);
+  }, [search, priority, category, completed, owner, status, pipeline, currentApp]);
 
   useEffect(() => {
     fetchTodos();
@@ -154,7 +160,7 @@ export default function Home() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this todo?')) return;
+    if (!confirm('Are you sure you want to delete this assignment?')) return;
 
     const res = await fetch(`/api/todos/${id}`, {
       method: 'DELETE',
@@ -207,7 +213,7 @@ export default function Home() {
         <div className="header-content">
           <div className="logo-title">
             <img src="/logo.png" alt="Todo App Logo" className="app-logo" />
-            <h1>Todo App</h1>
+            <h1>Execution Mission Control</h1>
           </div>
           <div className="app-switcher">
             <select
@@ -265,6 +271,12 @@ export default function Home() {
             onCategoryChange={setCategory}
             completed={completed}
             onCompletedChange={setCompleted}
+            owner={owner}
+            onOwnerChange={setOwner}
+            status={status}
+            onStatusChange={setStatus}
+            pipeline={pipeline}
+            onPipelineChange={setPipeline}
           />
 
           <TodoList

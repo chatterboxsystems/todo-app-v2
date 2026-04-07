@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 
 const DEFAULT_CATEGORIES = ['Personal', 'Shopping', 'Health', 'Learning', 'Home', 'Finance', 'Other'];
+const OWNERS = ['BensonsIII', 'Jeffery', 'Flo', 'CEO', 'CIO'];
+const STATUSES = ['Open', 'In Progress', 'Closed', 'Reopen'];
+const PIPELINES = ['🧠 Backlog', '⚡ In Progress', '👀 Review', '✅ Completed'];
 
 export default function TodoForm({ onSubmit, editingTodo, onCancel, categories = [] }) {
   const [title, setTitle] = useState('');
@@ -12,6 +15,9 @@ export default function TodoForm({ onSubmit, editingTodo, onCancel, categories =
   const [newCategory, setNewCategory] = useState('');
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [dueDate, setDueDate] = useState('');
+  const [owner, setOwner] = useState('');
+  const [status, setStatus] = useState('Open');
+  const [pipeline, setPipeline] = useState('🧠 Backlog');
   const [loading, setLoading] = useState(false);
 
   // Combine default categories with custom ones from database
@@ -24,6 +30,9 @@ export default function TodoForm({ onSubmit, editingTodo, onCancel, categories =
       setPriority(editingTodo.priority || 'medium');
       setCategory(editingTodo.category || '');
       setDueDate(editingTodo.dueDate ? editingTodo.dueDate.split('T')[0] : '');
+      setOwner(editingTodo.owner || '');
+      setStatus(editingTodo.status || 'Open');
+      setPipeline(editingTodo.pipeline || '🧠 Backlog');
     } else {
       resetForm();
     }
@@ -37,6 +46,9 @@ export default function TodoForm({ onSubmit, editingTodo, onCancel, categories =
     setNewCategory('');
     setShowNewCategory(false);
     setDueDate('');
+    setOwner('');
+    setStatus('Open');
+    setPipeline('🧠 Backlog');
   };
 
   const handleSubmit = async (e) => {
@@ -52,10 +64,13 @@ export default function TodoForm({ onSubmit, editingTodo, onCancel, categories =
         priority,
         category: finalCategory,
         dueDate,
+        owner,
+        status,
+        pipeline,
       });
       resetForm();
     } catch (error) {
-      console.error('Error submitting todo:', error);
+      console.error('Error submitting assignment:', error);
     } finally {
       setLoading(false);
     }
@@ -94,18 +109,60 @@ export default function TodoForm({ onSubmit, editingTodo, onCancel, categories =
 
       <div className="form-row">
         <div className="form-group">
+          <label>Owner</label>
+          <select
+            value={owner}
+            onChange={(e) => setOwner(e.target.value)}
+            className="form-select"
+          >
+            <option value="">Select owner...</option>
+            {OWNERS.map((o) => (
+              <option key={o} value={o}>{o}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Status</label>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="form-select"
+          >
+            {STATUSES.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Pipeline</label>
+          <select
+            value={pipeline}
+            onChange={(e) => setPipeline(e.target.value)}
+            className="form-select"
+          >
+            {PIPELINES.map((p) => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-group">
           <label>Priority</label>
           <select
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
             className="form-select"
           >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
             <option value="high">High</option>
+            <option value="priority">Priority</option>
+            <option value="medium">Medium</option>
           </select>
         </div>
+      </div>
 
+      <div className="form-row">
         <div className="form-group">
           <label>Category</label>
           {!showNewCategory ? (
@@ -172,7 +229,7 @@ export default function TodoForm({ onSubmit, editingTodo, onCancel, categories =
 
       <div className="form-actions">
         <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? 'Saving...' : editingTodo ? 'Update Todo' : 'Add Todo'}
+          {loading ? 'Saving...' : editingTodo ? 'Update Assignment' : 'Add Assignment'}
         </button>
         {editingTodo && (
           <button

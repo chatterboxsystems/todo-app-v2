@@ -47,7 +47,7 @@ export async function PUT(request, { params }) {
     }
 
     const body = await request.json();
-    const { title, description, completed, priority, category, dueDate } = body;
+    const { title, description, completed, priority, category, dueDate, owner, status, pipeline } = body;
 
     const updatedTodo = {
       ...existingTodo,
@@ -71,6 +71,15 @@ export async function PUT(request, { params }) {
     }
     if (dueDate !== undefined) {
       updatedTodo.dueDate = dueDate;
+    }
+    if (owner !== undefined) {
+      updatedTodo.owner = owner;
+    }
+    if (status !== undefined) {
+      updatedTodo.status = status;
+    }
+    if (pipeline !== undefined) {
+      updatedTodo.pipeline = pipeline;
     }
 
     await redis.hSet(`todo:${id}`, updatedTodo);
