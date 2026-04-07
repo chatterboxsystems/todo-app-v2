@@ -12,10 +12,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Todo App",
-  description: "A full-featured todo app with Redis",
+  title: "Execution Mission Control",
+  description: "Execution Mission Control",
   icons: {
-    icon: "/logo-square.ico",
+    icon: "/favicon.png",
   },
 };
 
