@@ -47,7 +47,7 @@ export async function PUT(request, { params }) {
     }
 
     const body = await request.json();
-    const { title, description, completed, priority, category, dueDate, owner, status, pipeline } = body;
+    const { title, description, completed, priority, category, dueDate, owner, status, pipeline, comments } = body;
 
     const updatedTodo = {
       ...existingTodo,
@@ -80,6 +80,9 @@ export async function PUT(request, { params }) {
     }
     if (pipeline !== undefined) {
       updatedTodo.pipeline = pipeline;
+    }
+    if (comments !== undefined) {
+      updatedTodo.comments = comments;
     }
 
     await redis.hSet(`todo:${id}`, updatedTodo);
