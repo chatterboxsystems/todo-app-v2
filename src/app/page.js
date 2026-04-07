@@ -226,6 +226,13 @@ export default function Home() {
         </div>
         <div className="header-actions">
           <button
+            onClick={() => window.location.reload()}
+            className="theme-toggle"
+            aria-label="Refresh page"
+          >
+            🔄
+          </button>
+          <button
             onClick={() => setDarkMode(!darkMode)}
             className="theme-toggle"
             aria-label="Toggle dark mode"
