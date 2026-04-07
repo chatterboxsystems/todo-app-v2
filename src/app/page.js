@@ -19,11 +19,7 @@ export default function Home() {
   const APPS = [
     { id: 'chatterbox', name: 'Chatterbox Systems' },
     { id: 'happyhearts', name: 'Happy Hearts Today' },
-<<<<<<< HEAD
     { id: 'thrivebaynarea', name: 'Thrive Bay Area' },
-=======
-    { id: 'tba', name: 'ThriveBayArea' },
->>>>>>> be1d45fd8a992166b68d82e3b3d0a33f02176586
   ];
 
   // Initialize dark mode and app from localStorage
