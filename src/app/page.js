@@ -284,6 +284,7 @@ export default function Home() {
             onToggle={handleToggle}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onUpdate={handleUpdateTodo}
             loading={loading}
           />
         </section>

@@ -2,7 +2,7 @@
 
 import TodoItem from './TodoItem';
 
-export default function TodoList({ todos, onToggle, onEdit, onDelete, loading }) {
+export default function TodoList({ todos, onToggle, onEdit, onDelete, onUpdate, loading }) {
   if (loading) {
     return <div className="todo-loading">Loading todos...</div>;
   }
@@ -34,6 +34,7 @@ export default function TodoList({ todos, onToggle, onEdit, onDelete, loading })
             onToggle={onToggle}
             onEdit={onEdit}
             onDelete={onDelete}
+            onUpdate={onUpdate}
           />
         ))}
       </div>

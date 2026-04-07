@@ -1,6 +1,8 @@
 'use client';
 
-export default function TodoItem({ todo, onToggle, onEdit, onDelete }) {
+const PIPELINES = ['🧠 Backlog', '⚡ In Progress', '👀 Review', '✅ Completed'];
+
+export default function TodoItem({ todo, onToggle, onEdit, onDelete, onUpdate }) {
   const isCompleted = todo.completed === 'true';
 
   const priorityClass = {
@@ -52,9 +54,15 @@ export default function TodoItem({ todo, onToggle, onEdit, onDelete }) {
         )}
 
         <div className="todo-meta">
-          {todo.pipeline && (
-            <span className="todo-category">{todo.pipeline}</span>
-          )}
+          <select
+            value={todo.pipeline || '🧠 Backlog'}
+            onChange={(e) => onUpdate(todo.id, { pipeline: e.target.value })}
+            className="pipeline-select"
+          >
+            {PIPELINES.map((p) => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
           {todo.owner && (
             <span className="todo-category">Owner: {todo.owner}</span>
           )}
