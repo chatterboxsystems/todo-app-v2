@@ -156,8 +156,8 @@ export default function TodoForm({ onSubmit, editingTodo, onCancel, categories =
             className="form-select"
           >
             <option value="high">High</option>
-            <option value="priority">Priority</option>
             <option value="medium">Medium</option>
+            <option value="low">Low</option>
           </select>
         </div>
       </div>

@@ -6,8 +6,8 @@ export default function TodoItem({ todo, onToggle, onEdit, onDelete, onUpdate })
   const isCompleted = todo.completed === 'true';
 
   const priorityClass = {
+    low: 'priority-low',
     medium: 'priority-medium',
-    priority: 'priority-medium',
     high: 'priority-high',
   };
 
@@ -49,11 +49,7 @@ export default function TodoItem({ todo, onToggle, onEdit, onDelete, onUpdate })
           </span>
         </div>
 
-        {todo.description && (
-          <p className="todo-description">{todo.description}</p>
-        )}
-
-        <div className="todo-meta">
+        <div className="pipeline-row">
           <select
             value={todo.pipeline || '🧠 Backlog'}
             onChange={(e) => onUpdate(todo.id, { pipeline: e.target.value })}
@@ -63,6 +59,13 @@ export default function TodoItem({ todo, onToggle, onEdit, onDelete, onUpdate })
               <option key={p} value={p}>{p}</option>
             ))}
           </select>
+        </div>
+
+        {todo.description && (
+          <p className="todo-description">{todo.description}</p>
+        )}
+
+        <div className="todo-meta">
           {todo.owner && (
             <span className="todo-category">Owner: {todo.owner}</span>
           )}

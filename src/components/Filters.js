@@ -79,8 +79,8 @@ export default function Filters({
         >
           <option value="">All Priorities</option>
           <option value="high">High</option>
-          <option value="priority">Priority</option>
           <option value="medium">Medium</option>
+          <option value="low">Low</option>
         </select>
       </div>
 
