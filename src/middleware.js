@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { verifyToken, COOKIE_NAME } from '@/lib/auth';
 
-const PUBLIC_PATHS = ['/login', '/api/auth/login'];
+const PUBLIC_PATHS = ['/login', '/setup', '/api/auth/login', '/api/auth/setup'];
 
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
@@ -31,5 +31,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|favicon.png|logo.png|login|setup).*)'],
 };
