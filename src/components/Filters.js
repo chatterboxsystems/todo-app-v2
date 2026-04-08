@@ -1,6 +1,6 @@
 'use client';
 
-const OWNERS = ['BensonsIII', 'Jeffery', 'Flo', 'CEO', 'CIO'];
+const OWNERS = ['BensonsIII', 'Jeffery', 'Flo'];
 const STATUSES = ['Open', 'In Progress', 'Closed', 'Reopen'];
 const PIPELINES = ['🧠 Backlog', '⚡ In Progress', '👀 Review', '✅ Completed'];
 

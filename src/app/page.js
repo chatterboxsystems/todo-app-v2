@@ -249,7 +249,7 @@ export default function Home() {
           {currentUser && (
             <span className="logged-in-user">👤 {currentUser}</span>
           )}
-          {currentUser === 'BensonsIII' && (
+          {currentUser === 'bakerman33' && (
             <button className="btn btn-small" onClick={() => router.push('/admin')}>
               Admin
             </button>

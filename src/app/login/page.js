@@ -3,10 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-const USERS = ['BensonsIII', 'Jeffery', 'Flo', 'CEO', 'CIO'];
-
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,7 +18,7 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username: 'bakerman33', password }),
       });
 
       const data = await res.json();
@@ -45,26 +42,11 @@ export default function LoginPage() {
         <div className="login-header">
           <img src="/favicon.png" alt="Logo" className="login-logo" />
           <h1>Execution Mission Control</h1>
-          <p>Sign in to continue</p>
+          <p>Admin access only</p>
         </div>
 
         <form onSubmit={handleLogin} className="login-form">
           {error && <div className="login-error">{error}</div>}
-
-          <div className="form-group">
-            <label>Who are you?</label>
-            <select
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="form-select"
-              required
-            >
-              <option value="">Select your name...</option>
-              {USERS.map((u) => (
-                <option key={u} value={u}>{u}</option>
-              ))}
-            </select>
-          </div>
 
           <div className="form-group">
             <label>Password</label>

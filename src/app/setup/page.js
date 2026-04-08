@@ -51,7 +51,7 @@ export default function SetupPage() {
         <div className="login-header">
           <img src="/favicon.png" alt="Logo" className="login-logo" />
           <h1>First-Time Setup</h1>
-          <p>Create the admin (BensonsIII) password</p>
+          <p>Create the admin (bakerman33) password</p>
         </div>
 
         {done ? (
@@ -66,7 +66,7 @@ export default function SetupPage() {
             {error && <div className="login-error">{error}</div>}
 
             <div className="form-group">
-              <label>Admin Password for BensonsIII</label>
+              <label>Admin Password for bakerman33</label>
               <input
                 type="password"
                 value={password}

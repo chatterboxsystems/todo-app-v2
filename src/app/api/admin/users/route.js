@@ -4,7 +4,7 @@ import { getRedisClient } from '@/lib/redis';
 import { verifyToken, COOKIE_NAME } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
-const ADMIN_USER = 'BensonsIII';
+const ADMIN_USER = 'bakerman33';
 
 async function getCurrentUser(request) {
   const cookieStore = await cookies();

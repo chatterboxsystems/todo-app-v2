@@ -7,15 +7,6 @@ export async function POST(request) {
   try {
     const redis = await getRedisClient();
 
-    // Check if any users already exist — if so, setup is locked
-    const existing = await redis.hGetAll('emc:users');
-    if (existing && Object.keys(existing).length > 0) {
-      return NextResponse.json(
-        { error: 'Setup already completed. This route is disabled.' },
-        { status: 403 }
-      );
-    }
-
     const { password } = await request.json();
 
     if (!password || password.length < 6) {
@@ -26,11 +17,11 @@ export async function POST(request) {
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
-    await redis.hSet('emc:users', 'BensonsIII', JSON.stringify({ passwordHash }));
+    await redis.hSet('emc:users', 'bakerman33', JSON.stringify({ passwordHash }));
 
     return NextResponse.json({
       success: true,
-      message: 'Admin account created. You can now log in as BensonsIII.',
+      message: 'Admin account created. You can now log in as bakerman33.',
     });
   } catch (error) {
     console.error('Setup error:', error);

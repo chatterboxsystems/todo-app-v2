@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-const ALL_USERS = ['BensonsIII', 'Jeffery', 'Flo', 'CEO', 'CIO'];
+const ALL_USERS = ['bakerman33'];
 
 export default function AdminPage() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -19,7 +19,7 @@ export default function AdminPage() {
     fetch('/api/auth/me')
       .then((r) => r.json())
       .then((d) => {
-        if (!d.user || d.user.username !== 'BensonsIII') {
+        if (!d.user || d.user.username !== 'bakerman33') {
           router.push('/');
         } else {
           setCurrentUser(d.user.username);
@@ -135,7 +135,7 @@ export default function AdminPage() {
               {users.map((u) => (
                 <li key={u} className="user-list-item">
                   <span>{u}</span>
-                  {u !== 'BensonsIII' && (
+                  {u !== 'bakerman33' && (
                     <button
                       className="btn btn-small btn-danger"
                       onClick={() => handleDelete(u)}
