@@ -1,11 +1,24 @@
 import { NextResponse } from 'next/server';
 import { getRedisClient } from '@/lib/redis';
 
-const TODOS_INDEX = 'todos:index';
+// Bot-to-bucket mapping — enforced server-side
+const BOT_APP_MAP = {
+  'Flo': 'chatterbox',
+  'Jeffery': 'thrivebaynarea',
+  'BensonsIII': null, // no restriction
+};
 
 // Helper to get app-specific index key
 function getAppIndexKey(app) {
   return `todos:index:${app}`;
+}
+
+// Returns the enforced app for a given owner, or falls back to provided app
+function resolveApp(owner, requestedApp) {
+  if (owner && BOT_APP_MAP.hasOwnProperty(owner)) {
+    return BOT_APP_MAP[owner] || requestedApp || 'chatterbox';
+  }
+  return requestedApp || 'chatterbox';
 }
 
 export async function GET(request) {
@@ -21,7 +34,7 @@ export async function GET(request) {
     const status = searchParams.get('status') || '';
     const pipeline = searchParams.get('pipeline') || '';
     const getCategories = searchParams.get('categories') === 'true';
-    const app = searchParams.get('app') || 'chatterbox';
+    const app = resolveApp(owner, searchParams.get('app'));
 
     // Get app-specific todo IDs from the sorted set
     const appIndexKey = getAppIndexKey(app);
@@ -106,7 +119,7 @@ export async function POST(request) {
     const body = await request.json();
 
     const { title, description, priority, category, dueDate, app, owner, status, pipeline } = body;
-    const currentApp = app || 'chatterbox';
+    const currentApp = resolveApp(owner, app);
 
     if (!title || !title.trim()) {
       return NextResponse.json(
