@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import TodoForm from '@/components/TodoForm';
 import TodoList from '@/components/TodoList';
 import Filters from '@/components/Filters';
@@ -15,12 +16,26 @@ export default function Home() {
   const [currentApp, setCurrentApp] = useState('chatterbox');
   const [sendingSms, setSendingSms] = useState(false);
   const [smsStatus, setSmsStatus] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const router = useRouter();
 
   const APPS = [
     { id: 'chatterbox', name: 'Chatterbox Systems' },
     { id: 'happyhearts', name: 'Happy Hearts Today' },
     { id: 'thrivebaynarea', name: 'Thrive Bay Area' },
   ];
+
+  // Fetch current user
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((r) => r.json())
+      .then((d) => setCurrentUser(d.user?.username || null));
+  }, []);
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    router.push('/login');
+  };
 
   // Initialize dark mode and app from localStorage
   useEffect(() => {
@@ -231,6 +246,20 @@ export default function Home() {
           <p className="subtitle">Manage your tasks with Redis</p>
         </div>
         <div className="header-actions">
+          {currentUser && (
+            <span className="logged-in-user">👤 {currentUser}</span>
+          )}
+          {currentUser === 'BensonsIII' && (
+            <button className="btn btn-small" onClick={() => router.push('/admin')}>
+              Admin
+            </button>
+          )}
+          <button
+            onClick={handleLogout}
+            className="btn btn-small btn-secondary"
+          >
+            Sign Out
+          </button>
           <button
             onClick={() => window.location.reload()}
             className="theme-toggle"
